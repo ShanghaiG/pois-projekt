@@ -34,7 +34,6 @@ def main():
 
 
 load_image()
-find_dot()
 set_line()
 count_color_changes()
 compare_lines()
