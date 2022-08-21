@@ -1,20 +1,15 @@
 # importing OpenCV(cv2) module
 import cv2
+import numpy as np
 
 
-# Python function to read image using OpenCV
+# Python function to read image using OpenCV and to find a red dot coordinates that should be on the middle of the
 def load_image():
-	# Save image in set directory
-	# Read RGB image
-	img = cv2.imread('Acacia_1.jpeg')
-	cv2.imshow('image', img)
-	cv2.waitKey(0)       
-	cv2.destroyAllWindows()
-
-# Python function to find a red dot coordinates that should be on the middle of the
-def find_dot():
-	print("find_dot!")
-
+	img = cv2.imread("Acacia_1.jpeg")
+	red_pixels = np.argwhere(cv2.inRange(img, (0, 0, 250), (0, 0, 255)))
+	for px, py in red_pixels:
+		cv2.circle(img, (py, px), 5, (0, 255, 255), 1)
+	cv2.imwrite("out.jpeg", img)
 
 # Python function to set multiple line from red dot to border of image
 def set_line():
