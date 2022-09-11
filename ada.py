@@ -2,7 +2,7 @@ import cv2 as cv
 import numpy as np
 from matplotlib import pyplot as plt
 
-img = cv.imread('zdj6-edit.png',0)
+img = cv.imread('zdj6-edit.png', 0)
 img = cv.medianBlur(img,5)
 
 th2 = cv.adaptiveThreshold(img,255,cv.ADAPTIVE_THRESH_MEAN_C,\

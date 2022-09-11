@@ -18,8 +18,6 @@ def load_image():
 	halfwidth = int(width/2)
 	halfheight = int(height/2)
 
-	print(Red_pixels)
-
 	# Set the points for lines
 	center = (Red_pixels[0][0], Red_pixels[0][1])
 	line1 = (0,0)
@@ -44,6 +42,7 @@ def load_image():
 	# TODO Repair adaptive threshold
 	# Image maniputalion section
 	img = cv2.medianBlur(img, 5)
+	img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 	img = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY,11,2)
 
 	####color change section
@@ -91,6 +90,14 @@ def load_image():
 
 		output_main.append(copy.deepcopy(output_unit))
 
+	# Data preprocesing
+
+	for line_ in output_main:
+		for point in line_:
+			if img[point[0], point[1]] == 255:
+				line_.pop(len(list(line_)) - 1)
+			elif img[point[0], point[1]] == 0:
+				continue
 
 	# Analiza danych
 
@@ -102,24 +109,57 @@ def load_image():
 		final_data_unit = []
 		state = None
 
+		# Switch Treshold to zmienna która definiuje ile pixeli musi nastąpić po sobie aby zaliczyć zmiane jako słój a
+		# nie szum jesli ustawiona jest na 5 wymagane jest 5 pixeli o tej samej barwie po sobie aby zapisać punkt jako
+		# słój
+
+		switch_threshold = 5
+		switch_threshold_current = 0
+
 		# Dla każdego punktu w lini
 		for point in line_:
 
 			# Jeśli pierwszy piksel jest czarny ustaw stan na czarny jeśli biały - biały
 			if img[point[0], point[1]] == 0 and state == None:
 				state = "DARK"
-			elif img[point[0], point[1]] == 1 and state == None:
+			elif img[point[0], point[1]] == 255 and state == None:
 				state = "LIGHT"
 
 			# Jeśli stan jest czarny a punkt ma wartość jasnego zapisz punkt
-			if state == "DARK" and img[point[0], point[1]] == 1:
-				state == "LIGHT"
-				final_data_unit.append((point[0],point[1]))
+			if state == "DARK" and img[point[0], point[1]] == 255:
+
+				final_data_unit.append((point[0], point[1]))
+				state = "LIGHT"
+
+				# Jeśli switch treshold jest równy 0 przypisz tymczasowo punkt na którym jako pierwszy nastąpiła zmiana
+				if switch_threshold_current == 0:
+					temporary_point = ((point[0], point[1]))
+
+				# Zwieksz licznik o 1
+				switch_threshold_current += 1
+
+				#Jesli swich threshold osiągnął określoną wartość zapisz go do listy
+				if switch_threshold_current == switch_threshold:
+					state = "LIGHT"
+					final_data_unit.append((point[0],point[1]))
+					switch_threshold_current = 0
 
 			# Jeśli stan jest biały a pixel ma wartość czarnego zmień stan
-			elif state == "LIGHT" and img[point[0], point[1]] == 1:
-				state == "DARK"
-				# final_data_unit.append((point[0], point[1]))
+			elif state == "LIGHT" and img[point[0], point[1]] == 0:
+
+				# Jeśli switch treshold jest równy 0 przypisz tymczasowo punkt na którym jako pierwszy nastąpiła zmiana
+				if switch_threshold_current == 0:
+					temporary_point = ((point[0], point[1]))
+
+				# Zwieksz licznik o 1
+				switch_threshold_current += 1
+
+				# Jesli swich threshold osiągnął określoną wartość zapisz go do listy
+				if switch_threshold_current == switch_threshold:
+					state = "DARK"
+					# final_data_unit.append((temporary_point[0],temporary_point[1]))
+					switch_threshold_current = 0
+
 
 			# dodaj liste do final_data
 		final_data.append(final_data_unit)
@@ -189,8 +229,20 @@ def load_image():
 	# 	final_data.append(final_data_unit)
 
 	# Draw lines on image
-	for line_ in lines:
-		img = cv2.line(img, center, line_, color, thickness, linetype)
+
+	img =cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
+
+	for line_ in final_data:
+		print(line_)
+		for point in line_:
+			print(point)
+			img = cv2.circle(img, [point[0], point[1]], 5, (0, 0, 255), 2)
+
+	for line_ in final_data:
+		print(len(line_))
+
+	# for line_ in lines:
+	# 	img = cv2.line(img, center, line_, color, thickness, linetype)
 
 
 	cv2.imshow("out.jpeg", img)
