@@ -153,7 +153,7 @@ def points_color_recognition(points_list, img):
     cv2.imshow("out.jpeg", img)
     cv2.waitKey(0)
 
-    return result
+    return result, final_data
 
 
 def calculate_age(results):
@@ -178,21 +178,54 @@ def calculate_age(results):
         age = statistics.median(results)
     return age
 
-def identify_tree_growth_conditions(data):
 
-    #TODO Name convencion data needs to be changed for more suitable one
+def get_mean_distance_between_rings(data, expected_average):
 
+    # List for storing 1's and 0's which represent conditions that tree had during its development
+    tree_growth_conditions_score = []
+
+    # For every line in date
     for line in data:
-        output = []
+
         last_point = None
-        sum = 0
+        average = 0
+
+        # For every point in line
         for point in line:
-            if last_point == None:
+
+            # if this is the first step in algorithm set last point
+            if not last_point:
                 last_point = (point[0], point[1])
+
+            # If this is not the first step calculate distance between two points add it to average and set new last
+            # point
             else:
-                sum += math.sqrt(pow((last_point[0] - point[0]), 2) + pow((last_point[1] - point[1]), 2))
+                distance = math.sqrt(pow((last_point[0] - point[0]), 2) + pow((last_point[1] - point[1]), 2))
+                average += distance
                 last_point = (point[0], point[1])
 
+        # Calculate average distance
+        average = average / len(line)
 
-        # to do zrobiś srednia sumy i jesli jest powyzej wartosci która powinna otrzymywać funkcja jest git jezeli git
-        # jest 2 razy funkcja zwraca ze drzewo miało dobre warunki
+        # If average distance is greater or equal to value specified append 1 if not 0
+        if average < float(expected_average):
+            tree_growth_conditions_score.append(0)
+        elif average >= float(expected_average):
+            tree_growth_conditions_score.append(1)
+
+    return  tree_growth_conditions_score
+
+
+def identify_tree_growth_conditions(data, expected_average):
+
+    # Call for get_mean_distance_between_rings whitch returns list containing True and false values represented by 1's
+    # and 0's
+    tree_growth_conditions_score = get_mean_distance_between_rings(data, expected_average)
+
+    # if to or more values in a list are one the tree had favorable conditions during development
+    if sum(tree_growth_conditions_score) >= 2:
+        print("the tree had favorable conditions for growth")
+    elif sum(tree_growth_conditions_score) < 2:
+        print("tree had unfavorable conditions for development")
+
+    return tree_growth_conditions_score
