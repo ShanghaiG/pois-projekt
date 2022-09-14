@@ -228,17 +228,18 @@ def identify_tree_growth_conditions(data, expected_average):
     elif sum(tree_growth_conditions_score) < 2:
         return "tree had unfavorable conditions for development"
 
-def crack_analysis(chuj):
+
+def crack_analysis(image):
 
     # Calculate amount of pixels on screen that are not white (background)
-    image_without_white_color = np.argwhere(cv2.inRange(chuj, (0, 0, 0), (250, 250, 250)))
+    image_without_white_color = np.argwhere(cv2.inRange(image, (0, 0, 0), (250, 250, 250)))
     pixels_amount = len(image_without_white_color)
 
     # Find dark pixels associated with cracks
-    dark_pixels = np.argwhere(cv2.inRange(chuj, (0, 0, 0), (3, 3, 3)))
+    dark_pixels = np.argwhere(cv2.inRange(image, (0, 0, 0), (3, 3, 3)))
 
     # create canvas with 0's for visualization in shape of orginal image
-    canvas = np.zeros([chuj.shape[0], chuj.shape[1]])
+    canvas = np.zeros([image.shape[0], image.shape[1]])
 
     # Replace places where dark pixels are with 1's
     for pixel in dark_pixels:
@@ -249,4 +250,4 @@ def crack_analysis(chuj):
     plt.show()
     plt.savefig(f'data_images/crack_analysis')
     # Print message with calculated amount
-    return round((len(dark_pixels) / pixels_amount), 2)
+    return round((len(dark_pixels) / pixels_amount), 2) * 100

@@ -1,6 +1,4 @@
 from calculate_methods import *
-# from DATA_ANALISYS import crack_analysis
-# import cv2
 
 
 def calculate_controller(calculate_mode, img):
@@ -23,5 +21,3 @@ def calculate_controller(calculate_mode, img):
         return tree_rings_growing_score
     elif calculate_mode == 'identify_tree_anomalies':
         return f'Tree have {crack_analysis(img)} % of cracks'
-
-#calculate_controller('identify_tree_anomalies', cv2.imread("C:/Users/Adam/PycharmProjects/pois-projekt/Images/bardzo_ladna_nazwa.png"))
