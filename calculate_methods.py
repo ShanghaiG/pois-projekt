@@ -224,8 +224,6 @@ def identify_tree_growth_conditions(data, expected_average):
 
     # if to or more values in a list are one the tree had favorable conditions during development
     if sum(tree_growth_conditions_score) >= 2:
-        print("the tree had favorable conditions for growth")
+        return "the tree had favorable conditions for growth"
     elif sum(tree_growth_conditions_score) < 2:
-        print("tree had unfavorable conditions for development")
-
-    return tree_growth_conditions_score
+        return "tree had unfavorable conditions for development"

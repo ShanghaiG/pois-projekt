@@ -15,13 +15,6 @@ img = create_threshold(img)
 summary_lines_points = create_points_in_line(create_lines(center, height, width), center, height, width)
 reduced_summary_points = remove_background(img, summary_lines_points)
 
-for line in summary_lines_points:
-    print(line)
-
-for line in reduced_summary_points:
-    print(line)
-
-
 
 def produce_plots(data, name, dir):
 
@@ -57,7 +50,7 @@ def compare_plots(dir):
     plt.imshow(images[1])
 
 
-def crack_analisys(image):
+def crack_analysis(image):
 
     # Calculate amount of pixels on screen that are not white (background)
     image_without_white_color = np.argwhere(cv2.inRange(image, (0, 0, 0), (250, 250, 250)))
@@ -76,11 +69,11 @@ def crack_analisys(image):
     # Display graph
     plt.imshow(canvas, cmap='hot', interpolation='nearest')
     plt.show()
-
+    plt.savefig(f'data_images/crack_analysis')
     # Print message with calculated amount
-    print(f"Tree have {round((len(dark_pixels) / pixels_amount),2)} % of cracks")
+    return round((len(dark_pixels) / pixels_amount), 2)
 
 
-crack_analisys(img_to_analisys)
-produce_plots([summary_lines_points,reduced_summary_points],['reduced_summary', 'summary_lines'],'data_images')
-compare_plots("data_images")
+#crack_analysis(img_to_analisys)
+#produce_plots([summary_lines_points,reduced_summary_points],['reduced_summary', 'summary_lines'],'data_images')
+#compare_plots("data_images")
