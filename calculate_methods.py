@@ -180,7 +180,7 @@ def calculate_age(results):
 
 
 def identify_tree_growth_conditions(tree_age, tree_diameter, average_tree_kind_growth):
-    average_annual_tree_growth = tree_diameter / tree_age * 2
+    average_annual_tree_growth = tree_diameter / tree_age
 
     if average_annual_tree_growth < average_tree_kind_growth:
         return "tree had unfavorable conditions for development"
