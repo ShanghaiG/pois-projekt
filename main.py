@@ -91,7 +91,7 @@ def main():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if image is not None:
                         diam = VariableInput('Input diameter').insert_data()
-                        kind = VariableInput('na razie nie wiem').insert_data()
+                        kind = VariableInput('Input average yearly tree growth').insert_data()
                         ctypes.windll.user32.MessageBoxW(0, calculate_controller('tree_growth_conditions', cv2.imread(image), float(diam), float(kind)),
                                                          "Growth conditions", 1)
                     else:
