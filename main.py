@@ -9,7 +9,6 @@ import ctypes
 pygame.init()
 pygame.font.init()
 screen_resolution = (1280, 720)
-picture = None
 window = pygame.display.set_mode(screen_resolution)
 pygame.display.set_caption("Tree's age verification")
 background = pygame.image.load("background.png")
@@ -21,6 +20,27 @@ calculate_tree_age_text = font.render('Calculate tree\'s age', True, (255, 255, 
 check_growth_conditions_text = font.render('Check growth conditions', True, (255, 255, 255))
 identify_tree_anomalies_text = font.render('Identify tree\'s anomalies', True, (255, 255, 255))
 import_tree_photo_text = font.render('Import tree\'s photo', True, (255, 255, 255))
+
+
+class VariableInput:
+    def __init__(self, button_text):
+        self.button_text = button_text
+
+    def insert_data(self):
+        def button_action():
+            self.result = variable.get()
+            window.destroy()
+            window.quit()
+
+        window = tkinter.Tk()
+        window.geometry('400x200')
+        variable = tkinter.Entry(window, width=20)
+        variable.pack()
+
+        tkinter.Button(window, text=self.button_text, command=button_action).pack()
+
+        window.mainloop()
+        return self.result
 
 
 def draw_window():
@@ -59,10 +79,10 @@ def main():
                 pygame.draw.rect(window, (150, 150, 150), [width/2 - 300, height/2 - 80, 600, 80])
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if image is not None:
-                        ctypes.windll.user32.MessageBoxW(0, calculate_controller('calculate_age', cv2.imread(image)),
+                        ctypes.windll.user32.MessageBoxW(0, calculate_controller('calculate_age', cv2.imread(image), 0, 0),
                                                          "Tree's age", 1)
                     else:
-                        raise ValueError("No photo was included")
+                        raise ValueError("No photo or data was included")
             else:
                 pygame.draw.rect(window, (110, 110, 110), [width/2 - 300, height/2 - 80, 600, 80])
 
@@ -70,7 +90,9 @@ def main():
                 pygame.draw.rect(window, (150, 150, 150), [width / 2 - 300, height / 2 + 40, 600, 80])
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if image is not None:
-                        ctypes.windll.user32.MessageBoxW(0, calculate_controller('tree_growth_conditions', cv2.imread(image)),
+                        diam = VariableInput('Input diameter').insert_data()
+                        kind = VariableInput('na razie nie wiem').insert_data()
+                        ctypes.windll.user32.MessageBoxW(0, calculate_controller('tree_growth_conditions', cv2.imread(image), float(diam), float(kind)),
                                                          "Growth conditions", 1)
                     else:
                         raise ValueError("No photo was included")
@@ -82,7 +104,7 @@ def main():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if image is not None:
                         ctypes.windll.user32.MessageBoxW(0, calculate_controller('identify_tree_anomalies',
-                                                                                 cv2.imread(image)), "Tree's anomalies", 1)
+                                                                                 cv2.imread(image), 0, 0), "Tree's anomalies", 1)
                     else:
                         raise ValueError("No photo was included")
             else:
@@ -97,6 +119,5 @@ def main():
         pygame.display.update()
 
     pygame.quit()
-
 
 main()

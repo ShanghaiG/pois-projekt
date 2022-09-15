@@ -1,7 +1,7 @@
 from calculate_methods import *
 
 
-def calculate_controller(calculate_mode, img):
+def calculate_controller(calculate_mode, img, diameter, kind_growth):
     if calculate_mode == 'calculate_age':
         center = calculate_center(img)
         height, width = image_size(img)
@@ -17,11 +17,10 @@ def calculate_controller(calculate_mode, img):
         summary_lines_points = create_points_in_line(create_lines(center, height, width), center, height, width)
         reduced_summary_points = remove_background(img, summary_lines_points)
         calculate_data, data_for_rings_distance_analisys = points_color_recognition(reduced_summary_points, img)
-        # TODO zaadaptować nowe wartośći przekazywane do funkcji 1 wiek drzewa 2 średnica drzewa (user input) 3 średnia przyrostu dla tego drzewa (user input)
+        age = calculate_age(calculate_data)
 
-        tree_rings_growing_score = identify_tree_growth_conditions(data_for_rings_distance_analisys, 11)
-
+        tree_rings_growing_score = identify_tree_growth_conditions(age, diameter, kind_growth)
 
         return tree_rings_growing_score
     elif calculate_mode == 'identify_tree_anomalies':
-        return f'Tree have {crack_analysis(img)} % of cracks'
+        return f'Tree have {crack_analysis(img)} % of anomalies'
