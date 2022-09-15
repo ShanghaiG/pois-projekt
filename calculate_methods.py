@@ -179,54 +179,14 @@ def calculate_age(results):
     return age
 
 
-def get_mean_distance_between_rings(data, expected_average):
+def identify_tree_growth_conditions(tree_age, tree_diameter, average_tree_kind_growth):
 
-    # List for storing 1's and 0's which represent conditions that tree had during its development
-    tree_growth_conditions_score = []
+    average_annual_tree_growth = tree_diameter / tree_age * 2
 
-    # For every line in date
-    for line in data:
-
-        last_point = None
-        average = 0
-
-        # For every point in line
-        for point in line:
-
-            # if this is the first step in algorithm set last point
-            if not last_point:
-                last_point = (point[0], point[1])
-
-            # If this is not the first step calculate distance between two points add it to average and set new last
-            # point
-            else:
-                distance = math.sqrt(pow((last_point[0] - point[0]), 2) + pow((last_point[1] - point[1]), 2))
-                average += distance
-                last_point = (point[0], point[1])
-
-        # Calculate average distance
-        average = average / len(line)
-
-        # If average distance is greater or equal to value specified append 1 if not 0
-        if average < float(expected_average):
-            tree_growth_conditions_score.append(0)
-        elif average >= float(expected_average):
-            tree_growth_conditions_score.append(1)
-
-    return  tree_growth_conditions_score
-
-
-def identify_tree_growth_conditions(data, expected_average):
-
-    # Call for get_mean_distance_between_rings whitch returns list containing True and false values represented by 1's
-    # and 0's
-    tree_growth_conditions_score = get_mean_distance_between_rings(data, expected_average)
-
-    # if to or more values in a list are one the tree had favorable conditions during development
-    if sum(tree_growth_conditions_score) >= 2:
-        return "the tree had favorable conditions for growth"
-    elif sum(tree_growth_conditions_score) < 2:
+    if average_annual_tree_growth < average_tree_kind_growth:
         return "tree had unfavorable conditions for development"
+    elif average_annual_tree_growth >= average_tree_kind_growth:
+        return "the tree had favorable conditions for growth"
 
 
 def crack_analysis(image):
